@@ -1,0 +1,38 @@
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cross_validation import train_test_split
+from sklearn import metrics
+from sklearn.model_selection import KFold
+import pandas as pd
+
+def read_data():
+    iris = pd.read_csv("Iris.csv", skiprows=2)
+    return iris
+
+x=read_data().data
+y=read_data().target
+
+knn=KNeighborsClassifier(n_neighbors=1)
+knn.fit(x,y)
+ 
+x_train, x_test, y_train, y_test = train_test_split(x,y,random_state=10)
+print(x_train.shape) 
+print(x_test.shape)
+knn.fit(x_train, y_train)
+y_pred = knn.predict(x_test)
+print(y_pred) 
+print(y_test)
+print(metrics.accuracy_score(y_test, y_pred))
+
+kf=KFold(n_splits=10, shuffle=False)
+print(kf)
+i=10
+for train_index, test_index in kf.split(x):
+    print("Fold ", i)
+    print("TRAIN :", train_index, "TEST :", test_index)
+    x_train=x[train_index]
+    x_test=x[test_index]
+    y_train=y[train_index]
+    y_test=y[test_index]
+    i+=10
+print("shape x_train :", x_train.shape)
+print("shape x_test :", x_test.shape)
